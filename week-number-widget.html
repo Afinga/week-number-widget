@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Week</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: transparent;
+      color: #111;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .label {
+      font-size: 1.2rem;
+      margin-bottom: 0.2rem;
+      font-weight: 600;
+    }
+    .w {
+      font-size: 2.6rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Week Number:</div>
+  <div class="w" id="week">--</div>
+
+  <script>
+    function getISOWeek(d) {
+      const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      const weekNo = Math.floor(((date - yearStart) / 86400000 + 1) / 7) + 1;
+      return weekNo;
+    }
+
+    function render() {
+      const now = new Date();
+      const wk = getISOWeek(now);
+      document.getElementById('week').textContent = wk;
+    }
+
+    render();
+
+    (function scheduleRefresh() {
+      const now = new Date();
+      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const ms = tomorrow - now + 1000;
+      setTimeout(function () {
+        render();
+        setInterval(render, 24 * 60 * 60 * 1000);
+      }, ms);
+    })();
+  </script>
+</body>
+</html>
